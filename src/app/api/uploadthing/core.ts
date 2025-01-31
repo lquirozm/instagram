@@ -3,7 +3,7 @@ import { UploadThingError } from "uploadthing/server";
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "userId" }); // Fake auth function
+const auth = (_req: Request) => ({ id: "fakeId" }); // Fake auth function
 
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
@@ -13,6 +13,7 @@ export const ourFileRouter = {
       maxFileCount: 1,
     },
   })
+  
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       const user = await auth(req);

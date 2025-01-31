@@ -13,7 +13,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({onImageUploadComplete}) => {
         className="ut-button:bg-gray-500 ut-button:ut-uploading:bg-gray-300"
         content={{
           button({ ready }) {
-            if (ready) return <div>Escoge una foto</div>;}}}
+            if (ready) return <div>Escoge una foto</div>;
+            },
+          allowedContent({ isUploading }) {
+            if (isUploading) return "Cargando imagen...";
+          },}}
         endpoint="imageUploader"
         onClientUploadComplete={(res) => {
           console.log("Files: ", res);
@@ -25,6 +29,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({onImageUploadComplete}) => {
             onImageUploadComplete(res[0].url); 
           }
         }}
+        
         onUploadError={(error: Error) => {
           alert(`ERROR! ${error.message}`);
         }}
