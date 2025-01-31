@@ -158,7 +158,7 @@ const Posts: React.FC<PostsProps> = ({
   useEffect(() => {
     getComments();
     getLikes();
-  }, [postId]);
+  }, []);
 
   console.log(listLikes);
 
