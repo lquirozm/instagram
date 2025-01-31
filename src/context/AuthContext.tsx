@@ -1,5 +1,5 @@
 "use client";
-import { onAuthStateChanged, getAuth, User } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/firebase/config";
 import { createContext, useContext, useEffect, useState } from "react";
 import Image from "next/image";

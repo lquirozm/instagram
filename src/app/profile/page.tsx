@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { RxAvatar } from "react-icons/rx";
 
-const page = () => {
+const Page = () => {
   const user = useAuthContext();
   const router = useRouter();
   const [showPopUp, setShowPopUp] = useState(false);
@@ -102,4 +102,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

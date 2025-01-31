@@ -1,5 +1,5 @@
-import { UploadButton, UploadDropzone } from "@/utils/uploadthing";
-import React, { useState } from "react";
+import { UploadButton } from "@/utils/uploadthing";
+import React from "react";
 
 interface ImageUploadProps{
     onImageUploadComplete: (url:string) => void;

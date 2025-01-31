@@ -17,7 +17,7 @@ export default function Home() {
 //Verificar si el usuario esta logueado
   useEffect(() => {
     if (user == null) router.push("/login");
-  }, [user]);
+  }, [user, router]);
 
 
   useEffect(() => {
@@ -32,6 +32,8 @@ export default function Home() {
     };
     getPosts();
   }, []);
+
+  console.log(posts)
 
   return (
     <div className="font-sans">

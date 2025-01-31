@@ -190,6 +190,7 @@ const Posts: React.FC<PostsProps> = ({
               <FaRegHeart
                 size={20}
                 onClick={addLike}
+                className="cursor-pointer"
               />
             )}
             {listLikes.length >= 1 &&
