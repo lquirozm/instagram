@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { auth } from '@/firebase/config';  
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
 const SignOutButton = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   // Observamos el estado de autenticación del usuario
