@@ -58,7 +58,7 @@ export default function Login() {
     <div className="pt-10 px-10 md:px-32">
       <div className="w-[100%] min-h-screen flex justify-center items-center font-sans">
         <div>
-          <Image src={"/phone.png"} width={450} height={600} alt="phone-login"/>
+          <Image src={"/phone.webp"} width={450} height={600} alt="phone-login"/>
         </div>
         <div className="flex flex-col gap-2 mt-10">
           <div className="flex flex-col gap-5 border border-gray-300 px-10 py-8 items-center">
