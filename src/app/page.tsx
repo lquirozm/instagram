@@ -1,5 +1,6 @@
 "use client";
 import AddPost from "@/components/AddPost";
+import BottomNavMenu from "@/components/BottomNavMenu";
 import NavBar from "@/components/NavBar";
 import Posts from "@/components/Posts";
 import { useAuthContext } from "@/context/AuthContext";
@@ -54,6 +55,7 @@ export default function Home() {
               />
             ))}
           </div>
+          <BottomNavMenu setShowPopUp={setShowPopUp} />
         </>
       ) : (
         <h1>Cerrando sesion...</h1>

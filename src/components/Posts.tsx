@@ -164,7 +164,7 @@ const Posts: React.FC<PostsProps> = ({
 
   return (
     <>
-      <div className="border w-[500px] flex flex-col">
+      <div className="flex flex-col border md:w-[500px] dark:border-gray-500">
         <div className="flex justify-between items-center p-2">
           <div className="flex items-center gap-2">
             <RxAvatar size={35} />

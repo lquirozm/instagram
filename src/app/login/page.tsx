@@ -56,8 +56,8 @@ export default function Login() {
 
   return (
     <div className="pt-10 px-10 md:px-32">
-      <div className="w-[100%] min-h-screen flex justify-center items-center font-sans">
-        <div>
+      <div className="w-[100%] min-h-screen flex justify-center items-center font-sans gap-8">
+        <div className="">
           <Image src={"/phone.webp"} width={450} height={600} alt="phone-login"/>
         </div>
         <div className="flex flex-col gap-2 mt-10">
@@ -79,6 +79,7 @@ export default function Login() {
                     id="name"
                     placeholder=" "
                     required
+                    className="dark:bg-black"
                   />
                   <label htmlFor="name" className="floating-label text-sm">
                     Telefono, usuario o correo electronico
@@ -91,6 +92,7 @@ export default function Login() {
                     id="password"
                     placeholder=" "
                     required
+                    className="dark:bg-black"
                   />
                   <label htmlFor="password" className="floating-label text-sm">
                     Contraseña

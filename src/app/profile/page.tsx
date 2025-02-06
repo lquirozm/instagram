@@ -1,5 +1,6 @@
 "use client";
 import AddPost from "@/components/AddPost";
+import BottomNavMenu from "@/components/BottomNavMenu";
 import NavBar from "@/components/NavBar";
 import Posts from "@/components/Posts";
 import { useAuthContext } from "@/context/AuthContext";
@@ -98,6 +99,7 @@ const Page = () => {
           )}
         </div>
       </div>
+      <BottomNavMenu setShowPopUp={setShowPopUp} />
     </div>
   );
 };

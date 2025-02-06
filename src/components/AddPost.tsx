@@ -42,7 +42,7 @@ const AddPost: React.FC<AddPostProps> = ({ setShowPopUp, setPosts }) => {
         },
       };
 
-      // Aquí actualizas el estado en Home sin tener que hacer una nueva consulta
+      // Actualizar el estado en Home sin tener que hacer una nueva consulta
       setPosts((prevPosts) => [newPost, ...prevPosts]); // Se agrega al principio de la lista
 
       alert("Post compartido con exito!");
