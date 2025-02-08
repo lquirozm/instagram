@@ -58,20 +58,20 @@ const Page = () => {
         </div>
         <hr />
         <h2 className="text-center font-semibold mt-2">Mis publicaciones</h2>
-        <div className="grid grid-cols-3 gap-2 mt-5 px-10">
+        <div className="grid grid-cols-3 gap-2 mt-5 px-1 md:px-5">
           {posts.map(
             ({ id, post }) =>
               post.userName === user?.displayName && (
-                <div key={id} className="">
-                  <Image
-                    src={post.imageUrl}
-                    width={500}
-                    height={400}
-                    alt={post.texto}
-                    title="Clic para ver la publicacion"
-                    className="object-contain cursor-pointer hover:shadow-md"
-                    onClick={() => handleClick(id)}
-                  />
+                <div key={id} className="h-60 md:h-auto">
+                    <Image
+                      src={post.imageUrl}
+                      width={500}
+                      height={500}
+                      alt={post.texto}
+                      title="Clic para ver la publicacion"
+                      className="h-60 md:h-full object-cover cursor-pointer hover:shadow-md"
+                      onClick={() => handleClick(id)}
+                    />
                   {popupPostId == id && user && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
                       <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-8 relative max-h-[100vh] overflow-y-auto overflow-x-hidden">

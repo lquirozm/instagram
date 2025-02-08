@@ -46,7 +46,7 @@ const AddPost: React.FC<AddPostProps> = ({ setShowPopUp, setPosts }) => {
       setPosts((prevPosts) => [newPost, ...prevPosts]); // Se agrega al principio de la lista
 
       alert("Post compartido con exito!");
-      setShowPopUp(false); //Cerramos el Popup luego de compartir el post
+      setShowPopUp(false); 
     } catch (err) {
       console.log(err);
     }

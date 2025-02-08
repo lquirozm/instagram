@@ -15,10 +15,11 @@ const NavBar: React.FC<NavBarProps> = ({ setShowPopUp }) => {
     const user = useAuthContext();
 
   return (
-    <nav className="flex justify-between py-2 px-2 md:border-b-2 shadow-md dark:border-b-gray-500 md:px-5">
+    <nav className="flex items-center justify-between py-2 px-2 md:border-b-2 shadow-md dark:border-b-gray-500 md:px-5">
       <div className="flex items-center">
         <Link href={"/"}>
-          <Image src="/LogosInstagram.svg" alt="logo" width={175} height={51} className="" />
+          <Image src="/LogosInstagram.svg" alt="logo" width={175} height={51} className="dark:hidden" />
+          <Image src="/InstaLogoWhite.svg" alt="logo" width={175} height={51} className="hidden dark:flex" />
         </Link> 
       </div>
       <div className="flex items-center gap-2 md:gap-5">
