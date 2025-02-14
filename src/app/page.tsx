@@ -15,26 +15,22 @@ export default function Home() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
 
-//Verificar si el usuario esta logueado
-  useEffect(() => {
-    if (user == null) router.push("/login");
-  }, [user, router]);
+  const getPosts = async () => {
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    const postsData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      post: doc.data(),
+    }));
+    setPosts(postsData);
+  };
 
-
   useEffect(() => {
-    const getPosts = async () => {
-      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      const postsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        post: doc.data(),
-      }));
-      setPosts(postsData);
-    };
+    if (user == null) {
+      router.push("/login");
+    }
     getPosts();
-  }, []);
-
-  console.log(posts)
+  }, [user, router]);
 
   return (
     <div className="font-sans">

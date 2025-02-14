@@ -27,24 +27,21 @@ const Page = () => {
     setPopupPostId(null);
   };
 
-  //Verificar si el usuario esta logueado
+  const getPosts = async () => {
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    const postsData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      post: doc.data(),
+    }));
+    setPosts(postsData);
+  };
   useEffect(() => {
-    console.log("User from context:", user);
-    if (user == null) router.push("/login");
-  }, [user, router]);
-
-  useEffect(() => {
-    const getPosts = async () => {
-      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      const postsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        post: doc.data(),
-      }));
-      setPosts(postsData);
-    };
+    if (user == null) {
+      router.push("/login");
+    }
     getPosts();
-  }, []);
+  }, [user, router]);
 
   return (
     <div className="font-sans">

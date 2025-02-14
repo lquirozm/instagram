@@ -23,7 +23,6 @@ export default function Register() {
     const userRegistered = result.user;
 
     if (userRegistered) {
-      // Asegurarse de que el usuario es un tipo de `User` de Firebase
       await updateProfile(userRegistered, {
         displayName: userName, // Guardamos el nombre de usuario en displayName
       });
@@ -51,7 +50,7 @@ export default function Register() {
             <h3 className="font-semibold text-[rgb(115,115,115)] text-center">
               Registrate para ver fotos y videos de tus amigos.
             </h3>
-            <button className="w-[100%] bg-blue-500 rounded-lg text-white py-2 font-bold text-sm hover:bg-blue-600 flex gap-2 justify-center">
+            {/* <button className="w-[100%] bg-blue-500 rounded-lg text-white py-2 font-bold text-sm hover:bg-blue-600 flex gap-2 justify-center">
               <Image
                 src={"/UilFacebook.svg"}
                 width={20}
@@ -59,11 +58,11 @@ export default function Register() {
                 alt="logo-fb"
               />
               Iniciar sesion con Facebook
-            </button>
-            <div className="flex justify-center items-center gap-2 text-gray-600 w-[100%] my-1">
+            </button> */}
+            {/* <div className="flex justify-center items-center gap-2 text-gray-600 w-[100%] my-1">
               <div className="w-[50%] border-t-2 border-gray-300"></div>o
               <div className="w-[50%] border-t-2 border-gray-300"></div>
-            </div>
+            </div> */}
 
             <div>
               <div
