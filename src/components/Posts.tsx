@@ -85,17 +85,20 @@ const Posts: React.FC<PostsProps> = ({
   };
 
   const deletePost = async () => {
-    try {
-      // Referencia al documento que deseas eliminar
-      const postRef = doc(db, "posts", postId);
-      // Eliminar el documento
-      await deleteDoc(postRef);
-      alert("Post eliminado con éxito!");
-
-      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
-    } catch (error) {
-      console.log("Error al eliminar el documento: ", error);
-    }
+    const result = confirm("¿Desea eliminar el post?");
+    if (result){
+      try {
+        // Referencia al documento que deseas eliminar
+        const postRef = doc(db, "posts", postId);
+        // Eliminar el documento
+        await deleteDoc(postRef);
+        alert("Post eliminado con éxito!");
+  
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+      } catch (error) {
+        console.log("Error al eliminar el documento: ", error);
+      }
+    } 
   };
 
   const deleteComment = async (id: string) => {
@@ -232,7 +235,7 @@ const Posts: React.FC<PostsProps> = ({
             value={newComment}
             type="text"
             placeholder="Escribe un comentario..."
-            className="w-full focus:outline-none border-2 rounded-lg p-1"
+            className="w-full focus:outline-none border-2 rounded-lg p-1 dark:bg-black"
           />
           <button
             type="submit"

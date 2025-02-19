@@ -8,6 +8,7 @@ import { db } from "@/firebase/config";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   const user = useAuthContext();
@@ -52,6 +53,7 @@ export default function Home() {
             ))}
           </div>
           <BottomNavMenu setShowPopUp={setShowPopUp} />
+          <Toaster />
         </>
       ) : (
         <h1>Cerrando sesion...</h1>

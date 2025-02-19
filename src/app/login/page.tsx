@@ -8,17 +8,20 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/config";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useToast from "@/hooks/useToast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { successToast } = useToast();
 
   const iniciarSesion = async () => {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
       console.log(result)
       if(result){
+        successToast("Bienvenido!")
         router.push("/")
       }
     } catch (error) {
