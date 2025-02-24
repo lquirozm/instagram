@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/context/AuthContext";
 import Link from "next/link";
 import React from "react";
 import { FiPlusSquare } from "react-icons/fi";
@@ -10,6 +11,7 @@ interface BottomNavProps {
 }
 
 const BottomNavMenu: React.FC<BottomNavProps> = ({ setShowPopUp }) => {
+  const user = useAuthContext();
   const handleClick = () => {
     setShowPopUp((prev) => !prev);
   };
@@ -24,7 +26,7 @@ const BottomNavMenu: React.FC<BottomNavProps> = ({ setShowPopUp }) => {
                     <FiPlusSquare size={30} onClick={handleClick} className="cursor-pointer" title="Nueva publicacion"/>
                 </li>
                 <li>
-                    <Link href={"/profile"} title="Perfil"><RxAvatar size={30}/></Link> 
+                    <Link href={`/profile/${user?.displayName}`} title="Perfil"><RxAvatar size={30}/></Link> 
                 </li>
             </ul>
         </div>

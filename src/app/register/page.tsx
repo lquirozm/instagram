@@ -5,10 +5,11 @@ import DownloadApp from "@/components/DownloadApp";
 import Footer from "@/components/Footer";
 import "./styles.css";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -17,20 +18,28 @@ export default function Register() {
   const router = useRouter();
 
   const registrarUsuario = async () => {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(result);
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const userRegistered = result.user;
 
-    const userRegistered = result.user;
-
-    if (userRegistered) {
-      await updateProfile(userRegistered, {
-        displayName: userName, // Guardamos el nombre de usuario en displayName
-      });
-      console.log("Display name actualizado con éxito");
+      if (userRegistered) {
+        await updateProfile(userRegistered, {
+          displayName: userName, // Guardamos el nombre de usuario en displayName
+        });
+        console.log("Display name actualizado con éxito");
+      }
+      await setDoc(doc(db, "users", userRegistered.uid),{
+        userName: userName,
+        email: email
+      })
+  
+      alert("Usuario registrado con exito.");
+      router.push("/login");
+      
+    }catch (error) {
+      alert("Error al registrar el usuario")
+      console.log("Error al registrar el usuario:", error);
     }
-
-    alert("Usuario registrado con exito.");
-    router.push("/login");
   };
 
   return (

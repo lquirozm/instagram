@@ -18,8 +18,8 @@ export default function Login() {
 
   const iniciarSesion = async () => {
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      console.log(result)
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      
       if(result){
         successToast("Bienvenido!")
         router.push("/")

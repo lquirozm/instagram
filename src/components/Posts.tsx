@@ -16,6 +16,7 @@ import { RxAvatar } from "react-icons/rx";
 import { IoSend } from "react-icons/io5";
 import { FaHeart, FaRegHeart, FaRegTrashAlt } from "react-icons/fa";
 import ListLikes from "./ListLikes";
+import Link from "next/link";
 
 interface PostsProps {
   postId: string;
@@ -171,9 +172,10 @@ const Posts: React.FC<PostsProps> = ({
         <div className="flex justify-between items-center p-2">
           <div className="flex items-center gap-2">
             <RxAvatar size={35} />
-            <h1 className="font-semibold">{userName}</h1>
+            <Link href={`profile/${userName}`} className="font-semibold">{userName}</Link>
           </div>
-          <div>
+          <div className="flex gap-4">
+            <button className="bg-blue-600 px-3 py-1 rounded-lg text-white text-sm font-semibold">Seguir</button>
             {user.displayName == userName && (
               <button title="Eliminar post" onClick={deletePost}>
                 <FaRegTrashAlt size={20} />

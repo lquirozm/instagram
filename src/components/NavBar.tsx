@@ -25,7 +25,7 @@ const NavBar: React.FC<NavBarProps> = ({ setShowPopUp }) => {
       <div className="flex items-center gap-2 md:gap-5">
         <FiPlusSquare size={50} onClick={handleClick} className="cursor-pointer hidden md:flex" title="Nueva publicacion"/>
         <Image src="/Heart.svg" alt="like" width={50} height={50} title="Proximamente !" className="hidden md:flex" />
-        <Link href={"/profile"} className="font-semibold hidden md:flex" title="Ir al perfil">{user?.displayName}</Link> 
+        <Link href={`/profile/${user?.displayName}`} className="font-semibold hidden md:flex" title="Ir al perfil">{user?.displayName}</Link> 
         <SignOutButton />
       </div>
     </nav>

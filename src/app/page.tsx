@@ -5,7 +5,7 @@ import NavBar from "@/components/NavBar";
 import Posts from "@/components/Posts";
 import { useAuthContext } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, orderBy, query, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -26,11 +26,28 @@ export default function Home() {
     setPosts(postsData);
   };
 
+  const saveUserDataIfNeeded = async () => {
+    if (user){
+      const userRef = doc(db, "users", user.uid); // Usamos el UID como clave del documento
+      const userDoc = await getDoc(userRef);
+    
+      if (!userDoc.exists()) {
+        // Si el documento no existe, crea uno
+        await setDoc(userRef, {
+          displayName: user.displayName,
+          email: user.email,
+        });
+      } else {
+        console.log("Usuario ya existe en la base de datos");
+      }
+  }};
+
   useEffect(() => {
     if (user == null) {
       router.push("/login");
     }
     getPosts();
+    saveUserDataIfNeeded();
   }, [user, router]);
 
   return (

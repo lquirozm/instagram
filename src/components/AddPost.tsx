@@ -17,7 +17,7 @@ const AddPost: React.FC<AddPostProps> = ({ setShowPopUp, setPosts }) => {
   const user = useAuthContext();
 
   const userName = user?.displayName || "Nombre de usuario no disponible";
-
+  
   const handleClick = () => {
     setShowPopUp((prev) => !prev); //Cerrar el popup
   };
@@ -29,6 +29,7 @@ const AddPost: React.FC<AddPostProps> = ({ setShowPopUp, setPosts }) => {
         texto: texto,
         imageUrl: imageUrl,
         userName: userName,
+        uid: user?.uid
       });
 
       // Agregar el nuevo post al estado de posts en el componente Home
