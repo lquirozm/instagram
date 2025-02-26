@@ -5,7 +5,7 @@ import NavBar from "@/components/NavBar";
 import Posts from "@/components/Posts";
 import { useAuthContext } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { addDoc, collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,7 @@ export default function Profile() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [popupPostId, setPopupPostId] = useState<string | null>(null);
+  const [listUsers, setListUsers] = useState<any[]>([]);
 
   const handleClick = (id: string) => {
     setPopupPostId(id);
@@ -39,6 +40,51 @@ export default function Profile() {
     }));
     setPosts(postsData);
   };
+ 
+  const getUserUidByUsername = async () => {
+    try {
+      const q = query(
+        collection(db, "users"),
+        where("displayName", "==", username)
+      );
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        // Se asume que los displayName son únicos, así que tomamos el primer documento
+        const userDoc = querySnapshot.docs[0];
+        return userDoc.id; // Este es el uid del usuario
+      } else {
+        console.log("No se encontró el usuario");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error obteniendo el uid del usuario:", error);
+      return null;
+    }
+  };
+  
+  const followUser = async () => {
+    if (user){
+      const targetUid = await getUserUidByUsername();
+      const newFollow = await addDoc(collection(db, "users", user?.uid, "following"), {
+        uid: targetUid,
+        displayName: username
+      })
+      
+      if (targetUid){
+        const q = query(collection(db, "users", targetUid, "followers"), where ("uid", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+        if(querySnapshot.empty){
+          //Si no lo sigue agrega a Followers
+          const newFollower = await addDoc(collection(db, "users", targetUid, "followers"), {
+            uid: user.uid,
+            displayName: user.displayName
+        });
+        console.log(newFollow, newFollower)
+        }
+    }
+  }}
+
   useEffect(() => {
     if (user == null) {
       router.push("/login");
@@ -55,6 +101,7 @@ export default function Profile() {
           <RxAvatar size={150} />
           <h1 className="font-semibold text-xl">{username}</h1>
           <h2>Seguidores</h2><h2>Siguiendo</h2>
+          <button onClick={followUser} className="bg-blue-500 px-4 py-1 rounded-lg text-white">Seguir</button>
         </div>
         <hr />
         <h2 className="text-center font-semibold mt-2">Mis publicaciones</h2>
