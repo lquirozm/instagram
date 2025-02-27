@@ -29,7 +29,7 @@ export default function Register() {
         console.log("Display name actualizado con éxito");
       }
       await setDoc(doc(db, "users", userRegistered.uid),{
-        userName: userName,
+        displayName: userName,
         email: email
       })
   
@@ -75,7 +75,7 @@ export default function Register() {
 
             <div>
               <div
-                className="flex flex-col gap-2 items-center"
+                className="flex flex-col gap-2 items-center" 
               >
                 <div className="form-container">
                   <input
@@ -83,6 +83,7 @@ export default function Register() {
                     type="text"
                     id="name"
                     placeholder=" "
+                    className="dark:bg-black"
                     required
                   />
                   <label htmlFor="name" className="floating-label text-sm">
@@ -95,6 +96,7 @@ export default function Register() {
                     type="password"
                     id="password"
                     placeholder=" "
+                    className="dark:bg-black"
                     required
                   />
                   <label htmlFor="password" className="floating-label text-sm">
@@ -107,6 +109,7 @@ export default function Register() {
                     type="text"
                     id="username"
                     placeholder=" "
+                    className="dark:bg-black"
                     required
                   />
                   <label htmlFor="username" className="floating-label text-sm">
