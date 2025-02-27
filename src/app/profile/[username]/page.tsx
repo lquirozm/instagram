@@ -5,7 +5,14 @@ import NavBar from "@/components/NavBar";
 import Posts from "@/components/Posts";
 import { useAuthContext } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
-import { addDoc, collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -21,7 +28,8 @@ export default function Profile() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [popupPostId, setPopupPostId] = useState<string | null>(null);
-  const [listUsers, setListUsers] = useState<any[]>([]);
+  const [followers, setFollowers] = useState<any[]>([]);
+  const [following, setFollowing] = useState<any[]>([]);
 
   const handleClick = (id: string) => {
     setPopupPostId(id);
@@ -44,7 +52,7 @@ export default function Profile() {
     }));
     setPosts(postsData);
   };
- 
+
   const getUserUidByUsername = async () => {
     try {
       const q = query(
@@ -52,7 +60,7 @@ export default function Profile() {
         where("displayName", "==", username)
       );
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         // Se asume que los displayName son únicos, así que tomamos el primer documento
         const userDoc = querySnapshot.docs[0];
@@ -66,34 +74,121 @@ export default function Profile() {
       return null;
     }
   };
-  
+
   const followUser = async () => {
-    if (user){
+    if (user) {
       const targetUid = await getUserUidByUsername();
-      const newFollow = await addDoc(collection(db, "users", user?.uid, "following"), {
-        uid: targetUid,
-        displayName: username
-      })
-      
-      if (targetUid){
-        const q = query(collection(db, "users", targetUid, "followers"), where ("uid", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        if(querySnapshot.empty){
-          //Si no lo sigue agrega a Followers
-          const newFollower = await addDoc(collection(db, "users", targetUid, "followers"), {
-            uid: user.uid,
-            displayName: user.displayName
-        });
-        console.log(newFollow, newFollower)
+      const newFollow = await addDoc(
+        collection(db, "users", user?.uid, "following"),
+        {
+          uid: targetUid,
+          displayName: username,
         }
+      );
+      const currentFollow = {
+        id: newFollow.id,
+        following: {
+          uid: targetUid,
+          displayName: username,
+        },
+      };
+      setFollowing((prev) => [currentFollow, ...prev]);
+      if (targetUid) {
+        const q = query(
+          collection(db, "users", targetUid, "followers"),
+          where("uid", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          //Si no lo sigue agrega a Followers
+          const newFollower = await addDoc(
+            collection(db, "users", targetUid, "followers"),
+            {
+              uid: user.uid,
+              displayName: user.displayName,
+            }
+          );
+          const currentFollower = {
+            id: newFollower.id,
+            follower: {
+              uid: user.uid,
+              displayName: user.displayName,
+            },
+          };
+          setFollowers((prev) => [currentFollower, ...prev]);
+          console.log(newFollow, newFollower);
+        }
+      }
     }
-  }}
+  };
+
+  const getFollowers = async () => {
+    try {
+      const targetUid = await getUserUidByUsername();
+      if (targetUid) {
+        const querySnapshot = await getDocs(
+          collection(db, "users", targetUid, "followers")
+        );
+        const followersData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          follower: doc.data(),
+        }));
+        setFollowers(followersData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getFollowings = async () => {
+    try {
+      const targetUid = await getUserUidByUsername();
+      if (targetUid) {
+        const querySnapshot = await getDocs(
+          collection(db, "users", targetUid, "following")
+        );
+        const followingData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          following: doc.data(),
+        }));
+        setFollowing(followingData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const unFollow = async (id: string) => {
+  //     try {
+  //       const targetUid = await getUserUidByUsername();
+  //       if (targetUid && user){
+  //          // Referencia al documento que deseas eliminar
+  //          const followerRef = doc(db, "users", targetUid, "followers", id);
+  //          // Eliminar el documento
+  //          await deleteDoc(followerRef);
+  //          setFollowers((prev) =>
+  //            prev.filter((follower) => follower.id !== id)
+  //          );
+  //          const followingRef = doc(db, "users", user?.uid, "following", id);
+  //          // Eliminar el documento
+  //          await deleteDoc(followingRef);
+  //          setFollowing((prev) =>
+  //            prev.filter((following) => following.id !== id)
+  //          );
+  //       }
+
+  //       } catch (error) {
+  //         console.log("Error al eliminar el comentario: ", error);
+  //       }
+  //   }
 
   useEffect(() => {
     if (user == null) {
       router.push("/login");
     }
     getPosts();
+    getFollowers();
+    getFollowings();
   }, [user, router]);
 
   return (
@@ -104,9 +199,36 @@ export default function Profile() {
         <div className="flex gap-5 items-center">
           <RxAvatar size={150} />
           <h1 className="font-semibold text-xl">{username}</h1>
-          <h2>Seguidores</h2><h2>Siguiendo</h2>
-          <button onClick={followUser} className="bg-blue-500 px-4 py-1 rounded-lg text-white">Seguir</button>
+          <div>
+            <span className="font-semibold">{posts.length}</span>
+            <h2 className="text-xs">Publicaciones</h2>
+          </div>
+          <div>
+            <span className="font-semibold">{followers.length}</span>
+            <h2 className="text-xs">Seguidores</h2>
+          </div>
+          <div>
+            <span className="font-semibold">{following.length}</span>
+            <h2 className="text-xs">Siguiendo</h2>
+          </div>
         </div>
+        <div className="text-center mb-2">
+            {followers.some(
+              (follower) => follower.follower.uid == user?.uid
+            ) ? (
+              <button className="bg-gray-500 px-4 py-1 rounded-lg text-white">
+                Siguiendo
+              </button>
+            ) : (
+              <button
+                onClick={followUser}
+                className="bg-blue-500 px-4 py-1 rounded-lg text-white"
+              >
+                Seguir
+              </button>
+            )}
+          </div>
+
         <hr />
         <h2 className="text-center font-semibold mt-2">Mis publicaciones</h2>
         <div className="grid grid-cols-3 gap-2 mt-5 px-1 md:px-5">
