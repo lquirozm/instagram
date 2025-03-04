@@ -8,6 +8,8 @@ import { db } from "@/firebase/config";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   orderBy,
   query,
@@ -30,6 +32,7 @@ export default function Profile() {
   const [popupPostId, setPopupPostId] = useState<string | null>(null);
   const [followers, setFollowers] = useState<any[]>([]);
   const [following, setFollowing] = useState<any[]>([]);
+  const [myFollowing, setMyFollowing] = useState<any[]>([]);
 
   const handleClick = (id: string) => {
     setPopupPostId(id);
@@ -62,7 +65,6 @@ export default function Profile() {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        // Se asume que los displayName son únicos, así que tomamos el primer documento
         const userDoc = querySnapshot.docs[0];
         return userDoc.id; // Este es el uid del usuario
       } else {
@@ -85,14 +87,7 @@ export default function Profile() {
           displayName: username,
         }
       );
-      const currentFollow = {
-        id: newFollow.id,
-        following: {
-          uid: targetUid,
-          displayName: username,
-        },
-      };
-      setFollowing((prev) => [currentFollow, ...prev]);
+      console.log("Acabas de seguir a ", username);
       if (targetUid) {
         const q = query(
           collection(db, "users", targetUid, "followers"),
@@ -140,7 +135,7 @@ export default function Profile() {
     }
   };
 
-  const getFollowings = async () => {
+  const getFollowing = async () => {
     try {
       const targetUid = await getUserUidByUsername();
       if (targetUid) {
@@ -157,30 +152,41 @@ export default function Profile() {
       console.log(error);
     }
   };
+  const getMyFollowing = async () => {
+    try {
+      if (user) {
+        const querySnapshot = await getDocs(
+          collection(db, "users", user.uid, "following")
+        );
+        const followingData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          following: doc.data(),
+        }));
+        setMyFollowing(followingData);
+      }
+    } catch (error) {
+      console.log("Error al obtener tus siguiendo",error);
+    }
+  };
 
-  // const unFollow = async (id: string) => {
-  //     try {
-  //       const targetUid = await getUserUidByUsername();
-  //       if (targetUid && user){
-  //          // Referencia al documento que deseas eliminar
-  //          const followerRef = doc(db, "users", targetUid, "followers", id);
-  //          // Eliminar el documento
-  //          await deleteDoc(followerRef);
-  //          setFollowers((prev) =>
-  //            prev.filter((follower) => follower.id !== id)
-  //          );
-  //          const followingRef = doc(db, "users", user?.uid, "following", id);
-  //          // Eliminar el documento
-  //          await deleteDoc(followingRef);
-  //          setFollowing((prev) =>
-  //            prev.filter((following) => following.id !== id)
-  //          );
-  //       }
-
-  //       } catch (error) {
-  //         console.log("Error al eliminar el comentario: ", error);
-  //       }
-  //   }
+  const unFollow = async (myId: string, targetId: string) => {
+    try {
+      const targetUid = await getUserUidByUsername();
+      if (targetUid && user) {
+        // Referencia al documento que deseas eliminar
+        const followerRef = doc(db, "users", targetUid, "followers", myId);
+        // Eliminar el documento
+        await deleteDoc(followerRef);
+        console.log("Has dejado de seguir a", username);
+        setFollowers((prev) => prev.filter((follower) => follower.id !== myId));
+        const followingRef = doc(db, "users", user?.uid, "following", targetId);
+        // Eliminar el documento
+        await deleteDoc(followingRef);
+      }
+    } catch (error) {
+      console.log("Error al eliminar el comentario: ", error);
+    }
+  };
 
   useEffect(() => {
     if (user == null) {
@@ -188,7 +194,8 @@ export default function Profile() {
     }
     getPosts();
     getFollowers();
-    getFollowings();
+    getFollowing();
+    getMyFollowing();
   }, [user, router]);
 
   return (
@@ -212,22 +219,38 @@ export default function Profile() {
             <h2 className="text-xs">Siguiendo</h2>
           </div>
         </div>
-        <div className="text-center mb-2">
-            {followers.some(
-              (follower) => follower.follower.uid == user?.uid
-            ) ? (
-              <button className="bg-gray-500 px-4 py-1 rounded-lg text-white">
+        <div className="flex justify-center md:px-40 mb-2 md:justify-start">
+          {followers.some((follower) => follower.follower.uid == user?.uid) ? (
+            <div className="flex justify-center gap-2 md:justify-start">
+              <button
+                className="bg-green-500 px-4 py-1 rounded-lg text-white"
+                disabled
+              >
                 Siguiendo
               </button>
-            ) : (
               <button
-                onClick={followUser}
-                className="bg-blue-500 px-4 py-1 rounded-lg text-white"
+                className="bg-gray-500 px-4 py-1 rounded-lg text-white"
+                onClick={() =>
+                  unFollow(
+                    followers.find(
+                      (follower) => follower.follower.uid === user?.uid
+                    ).id,
+                    myFollowing.find((following)=>following.following.displayName == username).id
+                  )
+                }
               >
-                Seguir
+                Dejar de seguir
               </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <button
+              onClick={followUser}
+              className="bg-blue-500 px-4 py-1 rounded-lg text-white"
+            >
+              Seguir
+            </button>
+          )}
+        </div>
 
         <hr />
         <h2 className="text-center font-semibold mt-2">Mis publicaciones</h2>

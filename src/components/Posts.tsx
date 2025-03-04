@@ -190,7 +190,10 @@ const Posts: React.FC<PostsProps> = ({
         <div className="p-2">
           <div className="flex gap-2 items-center">
             {listLikes.some((like)=>like.like.uid === user.uid) ? (
-              <FaHeart color="red" size={20} onClick={()=>deleteLike(listLikes.find((like)=>like.like.uid === user.uid).id)} />
+              <FaHeart 
+                color="red" 
+                size={20} 
+                onClick={()=>deleteLike(listLikes.find((like)=>like.like.uid === user.uid).id)} />
             ) : (
               <FaRegHeart
                 size={20}

@@ -9,7 +9,7 @@ import { auth, db } from "@/firebase/config";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -19,22 +19,27 @@ export default function Register() {
 
   const registrarUsuario = async () => {
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      const userRegistered = result.user;
-
-      if (userRegistered) {
-        await updateProfile(userRegistered, {
-          displayName: userName, // Guardamos el nombre de usuario en displayName
-        });
-        console.log("Display name actualizado con éxito");
+      const q = query(collection(db, "users"), where("displayName", "==", userName));
+      const querySnapshot = await getDocs(q);
+      if(querySnapshot.empty){
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        const userRegistered = result.user;
+        if (userRegistered) {
+          await updateProfile(userRegistered, {
+            displayName: userName, // Guardamos el nombre de usuario en displayName
+          });
+          console.log("Display name actualizado con éxito");
+        }
+        await setDoc(doc(db, "users", userRegistered.uid),{
+          displayName: userName,
+          email: email
+        })
+        alert("Usuario registrado con exito.");
+        router.push("/login");
       }
-      await setDoc(doc(db, "users", userRegistered.uid),{
-        displayName: userName,
-        email: email
-      })
-  
-      alert("Usuario registrado con exito.");
-      router.push("/login");
+      else{
+        alert("El nombre de usuario ya esta en uso,  favor ingrese otro");
+      }
       
     }catch (error) {
       alert("Error al registrar el usuario")
@@ -80,7 +85,7 @@ export default function Register() {
                 <div className="form-container">
                   <input
                     onChange={(e) => setEmail(e.target.value)}
-                    type="text"
+                    type="email"
                     id="name"
                     placeholder=" "
                     className="dark:bg-black"
