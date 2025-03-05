@@ -16,7 +16,8 @@ export default function Login() {
   const router = useRouter();
   const { successToast } = useToast();
 
-  const iniciarSesion = async () => {
+  const iniciarSesion = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       
@@ -46,7 +47,7 @@ export default function Login() {
                 height={51}
               />
             </Link>
-            <div>
+            <form onSubmit={iniciarSesion}>
               <div className="flex flex-col gap-2 items-center">
                 <div className="form-container">
                   <input
@@ -74,12 +75,12 @@ export default function Login() {
                     Contraseña
                   </label>
                 </div>
-                <button onClick={iniciarSesion} className="w-[100%] bg-blue-400 rounded-lg text-white py-2 font-bold text-sm hover:bg-blue-600">
+                <button type="submit" className="w-[100%] bg-blue-400 rounded-lg text-white py-2 font-bold text-sm hover:bg-blue-600">
                   Iniciar sesion
                 </button>
                 <p className="text-sm mt-1">¿Olvidaste tu contraseña?</p>
               </div>
-            </div>
+            </form>
           </div>
           <div className="border border-gray-300 px-10 py-6 text-center text-sm">
             ¿No tienes una cuenta?{" "}

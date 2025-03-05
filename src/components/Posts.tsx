@@ -1,3 +1,4 @@
+import "animate.css";
 import { db } from "@/firebase/config";
 import { User } from "firebase/auth";
 import {
@@ -175,7 +176,7 @@ const Posts: React.FC<PostsProps> = ({
             <Link href={`profile/${userName}`} className="font-semibold">{userName}</Link>
           </div>
           <div className="flex gap-4">
-            <button className="bg-blue-600 px-3 py-1 rounded-lg text-white text-sm font-semibold">Seguir</button>
+            <Link href={`profile/${userName}`} className="bg-blue-600 px-3 py-1 rounded-lg text-white text-sm font-semibold">Ir al perfil</Link>
             {user.displayName == userName && (
               <button title="Eliminar post" onClick={deletePost}>
                 <FaRegTrashAlt size={20} />
@@ -191,6 +192,7 @@ const Posts: React.FC<PostsProps> = ({
           <div className="flex gap-2 items-center">
             {listLikes.some((like)=>like.like.uid === user.uid) ? (
               <FaHeart 
+                className="animate__animated animate__fadeInBottomRight "
                 color="red" 
                 size={20} 
                 onClick={()=>deleteLike(listLikes.find((like)=>like.like.uid === user.uid).id)} />

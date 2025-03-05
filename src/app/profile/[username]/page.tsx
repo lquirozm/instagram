@@ -1,4 +1,5 @@
 "use client";
+import "animate.css";
 import AddPost from "@/components/AddPost";
 import BottomNavMenu from "@/components/BottomNavMenu";
 import NavBar from "@/components/NavBar";
@@ -238,11 +239,12 @@ export default function Profile() {
                     myFollowing.find((following)=>following.following.displayName == username).id
                   )
                 }
-              >
+              > 
                 Dejar de seguir
               </button>
             </div>
           ) : (
+            username !== user?.displayName &&
             <button
               onClick={followUser}
               className="bg-blue-500 px-4 py-1 rounded-lg text-white"
@@ -268,7 +270,7 @@ export default function Profile() {
               />
               {popupPostId == id && user && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                  <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-8 relative max-h-[100vh] overflow-y-auto overflow-x-hidden dark:bg-[#121212]">
+                  <div className="animate__animated animate__bounceInDown bg-white rounded-lg shadow-lg w-full max-w-xl p-8 relative max-h-[100vh] overflow-y-auto overflow-x-hidden dark:bg-[#121212]">
                     <div className="flex justify-end">
                       <IoIosCloseCircle
                         size={30}
